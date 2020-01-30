@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KOTY - REAKCJA</title>
+  <style>
+	div{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+		text-align: center;
+	}
+	canvas{
+		border: 1px dashed red;
+		width: 15cm;
+		height: 15cm;
+	}
+  </style>
+</head>
+<body>
+	<div class="center">
+		  <canvas id="canvas"></canvas><br />
+		  <button type="button">Play</button>
+		  <button type="button">Pause</button><br />
+		  <a href="https://www.youtube.com/watch?v=FPh8kNc56iM" target="_blank">Źródło Green Screena</a>
+	</div>
+  <script>
+	var data = null;
+	var max_r = 152;
+	var max_g = 153;
+	var max_b = 167;
+
+	function play(){
+
+		if(video.paused || video.ended){ 
+			canvas.style.backgroundImage = ""
+			return;
+		}
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		ctx.drawImage(video, 0, 0,canvas.width,canvas.height);
+		data = ctx.getImageData(0,0,canvas.width,canvas.height);
+		canvas.style.backgroundImage = "url('cats2.jpg')";
+		canvas.style.backgroundSize = "cover";
+		var i;
+		for (i = 0; i < data.data.length; i += 4) {
+		  var r = data.data[i];
+		  var g = data.data[i + 1];
+		  var b = data.data[i + 2];
+		  if(r < max_r && g > max_g && b < max_b){
+			data.data[i + 3] = 0;
+		  }
+		}
+		ctx.putImageData(data, 0, 0);
+		requestAnimationFrame(play);
+	}
+	
+    var canvas = document.getElementById("canvas");
+    var video = document.createElement("video");
+	var ctx = canvas.getContext("2d");
+	video.onplay = function(){ requestAnimationFrame(play); }
+	video.src = "wir.mp4";
+	document.getElementsByTagName("button")[0].onclick = function(){
+		video.play();
+	}	
+	document.getElementsByTagName("button")[1].onclick = function(){
+		video.pause();
+	}
+  </script>
+</body>
+</html>
